@@ -87,8 +87,8 @@ El frontend está construido con React y utiliza Vite como herramienta de constr
 - docker-compose up --build
 
 4. Una vez que los contenedores estén en funcionamiento, puede acceder a:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
 
 ## Desarrollo local
 
@@ -122,23 +122,6 @@ Cree un archivo `.env` en la carpeta del backend con las siguientes variables:
 
 Si está utilizando Sequelize para las migraciones de la base de datos, ejecute:
 - npx sequelize-cli db:seed:all
-
-
-## Pruebas
-
-### Backend
-
-Para ejecutar las pruebas del backend:
-- cd backend
-- npm test
-
-  
-### Frontend
-
-Para ejecutar las pruebas del frontend:
-- cd frontend
-- npm test
-
 
 ## Agradecimiento especial
 
