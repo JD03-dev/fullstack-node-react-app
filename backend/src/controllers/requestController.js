@@ -1,12 +1,28 @@
 import Request from '../models/request.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export const createRequest = async (req, res) => {
   try {
-    const request = await Request.create(req.body)
-    res.status(201).json(request)
+    const { employeeId, summary, description } = req.body
+    const uniqueCode = generateUniqueCode()
+
+    const newRequest = await Request.create({
+      employee_id: employeeId,
+      summary,
+      description,
+      code: uniqueCode
+    })
+
+    res.status(201).json(newRequest)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(400).json({ message: error.message })
   }
+}
+
+const generateUniqueCode = () => {
+  const timestamp = Date.now().toString(36)
+  const randomStr = uuidv4().split('-')[0]
+  return `REQ-${timestamp}-${randomStr}`.toUpperCase()
 }
 
 export const getAllRequests = async (req, res) => {

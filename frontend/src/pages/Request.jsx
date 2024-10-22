@@ -1,6 +1,6 @@
-import { Routes, Route } from 'react-router-dom';
-import RequestList from '../components/Request/RequestList';
-import RequestForm from '../components/Request/RequestForm';
+import { Routes, Route } from 'react-router-dom'
+import RequestList from '../components/Request/RequestList'
+import RequestForm from '../components/Request/RequestForm'
 
 const Requests = () => {
   return (
@@ -9,7 +9,7 @@ const Requests = () => {
       <Route path="new" element={<RequestForm />} />
       <Route path=":id" element={<RequestForm />} />
     </Routes>
-  );
-};
+  )
+}
 
-export default Requests;
+export default Requests

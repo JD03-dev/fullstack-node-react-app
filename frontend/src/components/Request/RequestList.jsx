@@ -1,22 +1,48 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getRequests } from '../../services/request.service';
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { getRequests, deleteRequest } from '../../services/request.service'
+import Alert from '../Common/alert'
 
 const RequestList = () => {
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState([])
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [requestToDelete, setRequestToDelete] = useState(null)
 
   useEffect(() => {
-    fetchRequests();
-  }, []);
+    fetchRequests()
+  }, [])
 
   const fetchRequests = async () => {
     try {
-      const data = await getRequests();
-      setRequests(data);
+      const data = await getRequests()
+      setRequests(data.requests)
     } catch (error) {
-      console.error('Error fetching requests:', error);
+      console.error('Error fetching requests:', error)
     }
-  };
+  }
+
+  const handleDeleteClick = (request) => {
+    setRequestToDelete(request)
+    setAlertOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (requestToDelete) {
+      try {
+        await deleteRequest(requestToDelete.id)
+        setRequests(requests.filter(req => req.id !== requestToDelete.id))
+      } catch (error) {
+        console.error('Error deleting request:', error)
+      }
+    }
+    setAlertOpen(false)
+    setRequestToDelete(null)
+  }
+
+  const handleAlertClose = () => {
+    setAlertOpen(false)
+    setRequestToDelete(null)
+  }
 
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -41,10 +67,7 @@ const RequestList = () => {
                         Empleado
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Tipo
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
+                        Resumen
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Fecha
@@ -58,27 +81,24 @@ const RequestList = () => {
                     {requests.map((request) => (
                       <tr key={request.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{request.employee_name}</div>
+                          <div className="text-sm font-medium text-gray-900">{request.Employee?.name}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{request.type}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            request.status === 'Aprobada' ? 'bg-green-100 text-green-800' : 
-                            request.status === 'Rechazada' ? 'bg-red-100 text-red-800' : 
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {request.status}
-                          </span>
+                          <div className="text-sm text-gray-500">{request.summary}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(request.date).toLocaleDateString()}
+                          {new Date(request.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Link to={`/requests/${request.id}`} className="text-indigo-600 hover:text-indigo-900">
+                          <Link to={`/requests/${request.id}`} className="text-indigo-600 hover:text-indigo-900 mr-5">
                             Editar
                           </Link>
+                          <button
+                            onClick={() => handleDeleteClick(request)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Eliminar
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -89,8 +109,15 @@ const RequestList = () => {
           </div>
         </div>
       </div>
+      <Alert
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        onConfirm={handleDeleteConfirm}
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de que quieres eliminar la solicitud de ${requestToDelete?.employee_name}?`}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default RequestList;
+export default RequestList

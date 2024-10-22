@@ -1,22 +1,60 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getEmployees } from '../../services/employee.service';
+import { useState, useEffect } from 'react'
+import { Link, Navigate } from 'react-router-dom'
+import { getEmployees, deleteEmployee } from '../../services/employee.service'
+import { useAuth } from '../../context/AuthContext'
+import Alert from '../Common/alert'
 
 const EmployeeList = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState([])
+  const { user } = useAuth()
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [employeeToDelete, setEmployeeToDelete] = useState(null)
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    fetchEmployees()
+  }, [])
+
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      fetchEmployees()
+    }
+  }, [user])
 
   const fetchEmployees = async () => {
     try {
-      const data = await getEmployees();
-      setEmployees(data.employees);
+      const data = await getEmployees()
+      setEmployees(data.employees)
     } catch (error) {
-      console.error('Error fetching employees:', error);
+      console.error('Error fetching employees:', error)
     }
-  };
+  }
+
+  const handleDeleteClick = (employee) => {
+    setEmployeeToDelete(employee)
+    setAlertOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (employeeToDelete) {
+      try {
+        await deleteEmployee(employeeToDelete.id)
+        setEmployees(employees.filter(emp => emp.id !== employeeToDelete.id))
+      } catch (error) {
+        console.error('Error deleting employee:', error)
+      }
+    }
+    setAlertOpen(false)
+    setEmployeeToDelete(null)
+  }
+
+  const handleAlertClose = () => {
+    setAlertOpen(false)
+    setEmployeeToDelete(null)
+  }
+
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/" />
+  }
 
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -64,9 +102,15 @@ const EmployeeList = () => {
                           <div className="text-sm text-gray-500">${employee.salary.toFixed(2)}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Link to={`/employees/${employee.id}`} className="text-indigo-600 hover:text-indigo-900">
+                          <Link to={`/employees/${employee.id}`} className="text-indigo-600 hover:text-indigo-900 mr-5">
                             Editar
                           </Link>
+                          <button
+                            onClick={() => handleDeleteClick(employee)}
+                            className="text-red-600 hover:text-red-900 "
+                          >
+                            Eliminar
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -77,8 +121,15 @@ const EmployeeList = () => {
           </div>
         </div>
       </div>
+      <Alert
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        onConfirm={handleDeleteConfirm}
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de que quieres eliminar al empleado ${employeeToDelete?.name}?`}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default EmployeeList;
+export default EmployeeList

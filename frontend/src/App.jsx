@@ -7,8 +7,9 @@ import Loading from './components/Common/Loading'
 
 const Home = lazy(() => import('./pages/Home'))
 const Login = lazy(() => import('./components/Auth/Login'))
+const Register = lazy(() => import('./components/Auth/Register'))
 const Employees = lazy(() => import('./pages/Employees'))
-// const Requests = lazy(() => import('./pages/Requests'))
+const Requests = lazy(() => import('./pages/Request'))
 
 const App = () => {
   return (
@@ -19,10 +20,11 @@ const App = () => {
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route path="/" element={<PrivateRoute />}>
                 <Route index element={<Home />} />
                 <Route path="employees/*" element={<Employees />} />
-                {/* <Route path="requests/*" element={<Requests />} /> */}
+                <Route path="requests/*" element={<Requests />} />
               </Route>
             </Routes>
           </Suspense>

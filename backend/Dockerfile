@@ -1,7 +1,7 @@
 # backend/Dockerfile
 
 # imagen base de Node.js
-FROM node:14
+FROM node:18-alpine
 
 # Directorio de trabajo
 WORKDIR /app

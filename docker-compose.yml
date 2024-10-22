@@ -1,4 +1,15 @@
 services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_node_react
+    ports:
+      - '5433:5432'  # Mapear el puerto 5432 del contenedor a 5433 en el host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   backend:
     build:
       context: ./backend
@@ -9,8 +20,8 @@ services:
       - db
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgres://user:password@db:5432/dbname
-      - DB_HOST:localhost
+      - DATABASE_URL=postgres://postgres:password@db:5432/app_node_react  # Usa el nombre del servicio "db"
+      - DB_HOST=db  # Nombre del servicio dentro de Docker
 
   frontend:
     build:
@@ -19,14 +30,6 @@ services:
     ports:
       - "5173:5173"
 
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_node_react
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
 volumes:
   postgres_data:
+

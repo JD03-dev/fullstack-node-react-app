@@ -14,32 +14,36 @@ const Header = () => {
             </Link>
             {user && (
               <div className="hidden ml-10 space-x-8 lg:block">
-                <Link to="/employees" className="text-base font-medium text-white hover:text-indigo-50">
-                  Empleados
-                </Link>
+                {user.role === 'admin' && (
+                  <Link to="/employees" className="text-base font-medium text-white hover:text-indigo-50">
+                    Empleados
+                  </Link>
+                )}
                 <Link to="/requests" className="text-base font-medium text-white hover:text-indigo-50">
                   Solicitudes
                 </Link>
               </div>
             )}
           </div>
-          <div className="ml-10 space-x-4">
+          <div className="ml-10 space-x-4 flex items-center">
+            {user && (
+              <span className="text-white mr-4">
+                {user.role === 'admin' ? 'Administrador' : 'Empleado'}
+              </span>
+            )}
             {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-white">{user.username}</span>
-                <button
-                  onClick={logout}
-                  className="inline-block bg-indigo-500 py-2 px-4 border border-transparent rounded-md text-base font-medium text-white hover:bg-opacity-75"
-                >
-                  Cerrar sesión
-                </button>
-              </div>
+              <button
+                onClick={logout}
+                className="inline-block bg-indigo-500 py-2 px-4 border border-transparent rounded-md text-base font-medium text-white hover:bg-opacity-75"
+              >
+                Cerrar sesión
+              </button>
             ) : (
               <Link
-                to="/login"
+                to="/register"
                 className="inline-block bg-white py-2 px-4 border border-transparent rounded-md text-base font-medium text-indigo-600 hover:bg-indigo-50"
               >
-                Iniciar sesión
+                Registrate
               </Link>
             )}
           </div>

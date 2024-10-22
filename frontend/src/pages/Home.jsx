@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const Home = () => {
+  const { user } = useAuth()
+
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 py-6 sm:px-0">
@@ -9,13 +12,15 @@ const Home = () => {
           Selecciona una opción para comenzar:
         </p>
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Link
-            to="/employees"
-            className="bg-white overflow-hidden shadow rounded-lg p-6 hover:bg-gray-50"
-          >
-            <h2 className="text-xl font-semibold text-indigo-600">Empleados</h2>
-            <p className="mt-2 text-gray-500">Gestiona la información de los empleados</p>
-          </Link>
+          {user.role === 'admin' && (
+            <Link
+              to="/employees"
+              className="bg-white overflow-hidden shadow rounded-lg p-6 hover:bg-gray-50"
+            >
+              <h2 className="text-xl font-semibold text-indigo-600">Empleados</h2>
+              <p className="mt-2 text-gray-500">Gestiona la información de los empleados</p>
+            </Link>
+          )}
           <Link
             to="/requests"
             className="bg-white overflow-hidden shadow rounded-lg p-6 hover:bg-gray-50"
@@ -26,7 +31,7 @@ const Home = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
