@@ -123,6 +123,18 @@ Cree un archivo `.env` en la carpeta del backend con las siguientes variables:
 Si está utilizando Sequelize para las migraciones de la base de datos, ejecute:
 - npx sequelize-cli db:seed:all
 
+## Pruebas
+Debido a limitaciones de tiempo, las pruebas automatizadas no se han implementado.
+
+ ### Tareas que faltaron
+Algunas áreas de mejora para el proyecto incluyen:
+
+- Implementar pruebas unitarias y de integración.
+- Implementar una mejor estructurazcion para escalabilidad del proyecto
+- Implementar comentarios en el codigo
+- Mejorar la gestión de errores y la retroalimentación al usuario.
+- Mejorar la accesibilidad de la interfaz de usuario.
+
 ## Agradecimiento especial
 
 Querido programador que está revisando este proyecto:
